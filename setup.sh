@@ -8,6 +8,11 @@ if ! command -v "$PYTHON" >/dev/null 2>&1; then
   exit 1
 fi
 
+if ! "$PYTHON" -c 'import sys; raise SystemExit(0 if (3, 11) <= sys.version_info < (3, 13) else 1)'; then
+  echo "[GuWen] Python 3.11 or 3.12 is required." >&2
+  exit 1
+fi
+
 if [ ! -x ".venv/bin/python" ]; then
   "$PYTHON" -m venv .venv
 fi
