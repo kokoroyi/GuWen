@@ -14,6 +14,16 @@
 
 > 图片和书稿只在本机处理；句读时会把正文发送到你配置的 AI 接口。
 
+## 界面预览
+
+| 校字台：逐字对位、候选字、框调整 | 整本 OCR：进度与停止 |
+|---|---|
+| ![校字台](docs/images/collation.png) | ![整本 OCR](docs/images/ocr-progress.png) |
+
+![句读台：结构、标点与点校本](docs/images/punctuation.png)
+
+> 配图为开发阶段界面截图，实际颜色和文案以当前版本为准。
+
 ## 功能
 
 - **整本 OCR**：PaddleOCR `PP-OCRv6_small_det` + `PP-OCRv6_medium_rec`，按栏识别、逐字切框。
@@ -30,9 +40,28 @@
 - 首次安装依赖、首次 OCR 需要网络（PaddleOCR 会下载 PP-OCRv6 模型到用户缓存目录）
 - 一个可用的 OpenAI 兼容 AI 接口（也可以指向你自己已经启动的 Ollama / vLLM / LM Studio，但本应用**不负责启动它**）
 
+## 下载
+
+- **源码**：当前仓库（`main` 分支）。
+- **Windows 启动器版**：到 [Releases](https://github.com/kokoroyi/GuWen/releases) 下载 `GuWen-v1.0.0-Windows-Launcher.zip`。压缩包包含源码、`setup.bat`、`GuWen.exe` 托盘启动器和说明文档，不包含 Python、OCR 模型或大模型。
+
 ## 快速开始
 
-### Windows
+### Windows：EXE 托盘启动器（推荐）
+
+1. 解压后双击 `setup.bat`，等待 Python 依赖安装完成（首次会创建 `.venv`）。
+2. 双击 `GuWen.exe`。
+3. 托盘图标出现后会自动打开 <http://127.0.0.1:8770/>。
+
+托盘右键菜单：
+
+```text
+打开工作台 / 打开数据目录 / 打开日志 / 安装依赖（首次使用） / 退出 GuWen
+```
+
+`GuWen.exe` 只启动本地 FastAPI 服务，**不会启动本地大模型**；AI 句读仍走网页里配置的 OpenAI 兼容接口。详细步骤见 [docs/Windows启动器版说明.md](docs/Windows启动器版说明.md)。
+
+### Windows：命令行启动
 
 ```bat
 setup.bat
@@ -139,7 +168,6 @@ python app/server.py
 ```text
 app/
 ├─ server.py          FastAPI 服务与 /api/*
-├─ run.py             启动入口（自动打开浏览器）
 ├─ pipeline.py        PaddleOCR 流水线
 ├─ store.py           书库/设置 JSON 存储
 ├─ punctgen.py        规则结构、句格、页范围
@@ -153,9 +181,14 @@ app/
    ├─ chardata/       查字索引（随仓库提供）
    └─ qupai/          曲牌句格与模型数据（随仓库提供）
 docs/
+├─ images/            README 界面配图
 ├─ AI接口配置.md
 └─ 架构说明.md
-run.py                启动入口（根目录）
+launcher/
+├─ TrayLauncher.cs    Windows 托盘启动器源码
+├─ GuWen.exe          托盘启动器成品
+└─ build.bat          重新编译
+run.py                启动入口（自动打开浏览器）
 requirements.txt
 setup.bat / start.bat
 setup.sh / start.sh
