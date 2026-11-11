@@ -22,7 +22,7 @@
 
 ![句读台：结构、标点与点校本](docs/images/punctuation.png)
 
-> 配图为开发阶段界面截图，实际颜色和文案以当前版本为准。
+> 配图为最终版界面截图；本仓库将「设置」中的本地模型配置改成了 OpenAI 兼容接口配置。
 
 ## 功能
 
@@ -43,7 +43,7 @@
 ## 下载
 
 - **源码**：当前仓库（`main` 分支）。
-- **Windows 启动器版**：到 [Releases](https://github.com/kokoroyi/GuWen/releases) 下载 `GuWen-v1.0.1-Windows-Launcher.zip`。压缩包包含源码、`setup.bat`、`GuWen.exe` 托盘启动器和说明文档，不包含 Python、OCR 模型或大模型。
+- **Windows 启动器版**：到 [Releases](https://github.com/kokoroyi/GuWen/releases) 下载 `GuWen-v1.0.2-Windows-Launcher.zip`。压缩包包含源码、`setup.bat`、`GuWen.exe` 托盘启动器和说明文档，不包含 Python、OCR 模型或大模型。
 
 ## 快速开始
 
