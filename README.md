@@ -1,5 +1,7 @@
 # 古籍整理工作台（GuWen）
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 面向古籍扫描本的本地整理工具：**图片导入 → 整本 OCR → 校字 → 结构识别 → AI 句读 → 点校本 DOCX 导出**。
 
 仓库地址：<https://github.com/kokoroyi/GuWen>
@@ -166,7 +168,6 @@ setup.sh / start.sh
 - 首次 OCR 需下载模型，且 PaddleOCR 在 CPU 上较慢；开发阶段用 344 页测试书跑通过全流程。
 - 初版句读仍可能有失败块 / 未标点块，界面会标记，需要人工或局部 AI 补。
 - 没有自动化 E2E；修改后请手工回归导入、OCR、句读、导出。
-- 本仓库未附带开源许可证；如果计划长期开源，请自行补充 `LICENSE`（例如 MIT）。
 
 ## 开发
 
@@ -179,3 +180,7 @@ python run.py
 ```
 
 接口说明见 [docs/架构说明.md](docs/架构说明.md)。AI 请求只使用标准 `POST /chat/completions` 和 `GET /models`，不依赖任何供应商 SDK。
+
+## 许可证
+
+本项目采用 [MIT License](LICENSE) 开源，Copyright (c) 2026 kokoroyi。
