@@ -18,9 +18,9 @@
 
 | 校字台：逐字对位、候选字、框调整 | 整本 OCR：进度与停止 |
 |---|---|
-| ![校字台](docs/images/collation.png) | ![整本 OCR](docs/images/ocr-progress.png) |
+| ![校字台](docs/images/final-collation.png) | ![整本 OCR](docs/images/final-ocr-progress.png) |
 
-![句读台：结构、标点与点校本](docs/images/punctuation.png)
+![句读台：结构、标点与点校本](docs/images/final-punctuation.png)
 
 > 配图为最终版界面截图；本仓库将「设置」中的本地模型配置改成了 OpenAI 兼容接口配置。
 
