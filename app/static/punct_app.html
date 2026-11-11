@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>句读 · 古籍整理工作台</title>
+<link rel="icon" href="/static/guwen.ico" type="image/x-icon">
+<link rel="stylesheet" href="/static/app.css?v=22">
+<link rel="stylesheet" href="/static/punct_app.css?v=59">
+<link rel="stylesheet" href="/static/settings_ui.css?v=1">
+</head>
+<body>
+<textarea id="punctSink" aria-hidden="true" tabindex="-1" style="position:fixed;left:-9999px;top:0;width:2px;height:2px;opacity:0;resize:none;border:0;padding:0;z-index:-1"></textarea>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><div class="seal">古</div><div><h1 id="bookTitle">古籍整理工作台</h1><p id="workSub">句读台</p></div></div>
+    <div class="topright">
+      <a class="chip link" id="linkBackJiao" href="/" style="text-decoration:none">校字</a>
+      <span class="chip mode on">句读</span>
+      <span class="chip link" id="btnSettings" style="cursor:pointer">设置</span>
+      <span class="chip link" id="btnExport" style="cursor:pointer">导出</span>
+      <a class="chip link" href="/" style="text-decoration:none">返回书库</a>
+      <span class="chip" id="saveState">已保存</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <span class="pcaption">结构</span>
+    <div class="tb on" id="filterStruct">结构标注</div>
+    <div class="tb" id="btnAddStruct">＋结构</div>
+    <div class="tb" id="btnChen">衬字</div>
+    <div class="tb" id="btnPointView">点校本</div>
+
+    <div class="vsep"></div>
+    <div class="tb primary ai" id="btnStructPunct" title="规则识别整本结构，再按结构逐块生成 AI 标点初版">句读整本初版</div>
+    <div class="tb" id="btnStaleFix" style="display:none;color:#A05A2C">重映射</div>
+    <div class="tb" id="btnReloadDoc" style="display:none">载入最新</div>
+    <div class="tb" id="btnExpand">展开</div>
+    <div class="tb" id="btnAminus">A−</div>
+    <div class="tb" id="btnAplus">A＋</div>
+
+    <div class="vsep"></div>
+    <span class="pcaption">校对</span>
+    <div class="tb" id="filterPending">只看待确认</div>
+    <div class="tb" id="filterLow">只看低置信</div>
+    <div class="tb" id="btnReview">复核</div>
+    <div class="tb" id="btnNextPending">下一处待定 <span class="badge" id="badgePending">0</span></div>
+
+    <div class="vsep"></div>
+    <span class="pcaption">标点</span>
+    <div class="palette" id="palette"></div>
+    <div class="tb" id="btnUndo">↶ 撤销</div>
+    <div class="tb" id="btnRedo">↷ 重做</div>
+
+    <div class="tb aichip" id="aiRunChip" style="display:none">按结构标点 0%</div>
+
+    <div class="right">
+      <div class="tb" id="btnPrev">上一叶</div>
+      <div class="tb" id="btnNext">下一叶</div>
+      <span>第 <b id="tbPageNo">1</b> / <b id="tbPageTotal">-</b> 叶</span>
+      <span>Ctrl+S 保存</span>
+    </div>
+  </div>
+
+  <div class="main">
+    <aside class="rail">
+      <div class="head"><div class="k" id="railMeta">上/下 · -- 叶</div><div class="t" id="railTitle">加载中…</div></div>
+      <div class="thumbs" id="railThumbs"></div>
+      <div class="railfoot" id="railProg"></div>
+    </aside>
+    <div class="canvaswrap">
+      <div class="stage">
+        <div id="canvas"><div class="pagewrap"><img id="pageImg" alt=""></div></div>
+      </div>
+      <div class="zoombar"><span class="zb" id="zoomOut">−</span><b id="zoomPct">100%</b><span class="zb" id="zoomIn">＋</span><span class="sep2"></span><span class="zb" id="zoomFit">适合宽度</span><span class="sep2"></span><span class="zb" id="zoomReset">100%</span></div>
+    </div>
+    <div class="work">
+      <div class="workbar">
+        <div class="leaf" id="leafTitle">第 1 葉</div>
+        <div class="sub" id="pheadSub"></div>
+        <div class="pstats" id="pstats"></div>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="ptext" id="ptext"></div>
+      <div class="editpreview" id="editPreview" style="display:none"></div>
+      <textarea class="editarea" id="editArea" spellcheck="false" style="display:none"></textarea>
+      <div class="rowsfoot" id="pfoot"></div>
+    </div>
+  </div>
+
+  <div class="footer" id="gfooter"></div>
+</div>
+
+<div class="popover" id="popover" style="display:none"></div>
+<div class="overlay" id="overlay" style="display:none"></div>
+<div id="modalRoot"></div>
+<input type="file" id="backupFile" accept=".zip,application/zip" style="display:none">
+<div class="toast" id="toast" style="display:none"></div>
+
+<div style="display:none">
+  <div id="btnHistory"></div><div id="btnQuality"></div><div id="btnBackup"></div><div id="btnRestore"></div>
+  <div id="modeReview"></div><div id="modeEdit"></div>
+  <div id="btnBreak"></div><div id="btnPara"></div>
+  <div id="batchAccept"></div><div id="batchReject"></div>
+  <div id="filterSource"></div><div id="filterType"></div>
+  <div id="btnRemap"></div>
+</div>
+
+<script src="/static/settings_ui.js?v=1"></script>
+<script src="/static/punct_app.js?v=66"></script>
+</body>
+</html>

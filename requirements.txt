@@ -1,0 +1,18 @@
+# GuWen 古籍整理工作台
+# Tested with Python 3.12 on Windows; Linux/macOS use the same packages.
+# numpy 2.3 requires Python >= 3.11.
+fastapi==0.143.3
+uvicorn==0.54.0
+pydantic==2.14.1
+
+numpy==2.3.5
+pillow==12.3.0
+
+# Local OCR.  The PP-OCRv6 model files are downloaded by PaddleOCR on first
+# use; they are not included in this repository.
+paddleocr==3.7.0
+paddlepaddle==3.3.1
+
+# DOCX export and traditional/simplified conversion.
+python-docx==1.2.0
+opencc-python-reimplemented==0.1.7

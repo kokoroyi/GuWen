@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+build/
+dist/
+
+# Local runtimes / model weights (this clean repo intentionally has none)
+runtime/
+.models/
+models/
+*.gguf
+*.safetensors
+*.onnx
+*.pdmodel
+*.pdiparams
+
+# User data: books, OCR jobs, exports, backups, temporary files, secrets
+app/data/books/
+app/data/jobs/
+app/data/exports/
+app/data/backup/
+app/data/tmp/
+app/data/settings.json
+app/data/settings.json.*.tmp
+app/data/**/*.bak
+
+# Logs and local test leftovers
+logs/
+*.log
+_smoke_*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

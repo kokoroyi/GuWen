@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>古籍整理工作台</title>
+<link rel="icon" href="/static/guwen.ico" type="image/x-icon">
+<link rel="stylesheet" href="/static/app.css?v=22">
+<link rel="stylesheet" href="/static/settings_ui.css?v=1">
+</head>
+<body>
+<!-- ========== 首页 ========== -->
+<div class="app" id="home">
+  <div class="topbar">
+    <div class="brand"><div class="seal">古</div><div><h1>古籍整理工作台</h1><p>本地识别 · OpenAI 兼容 AI 句读</p></div></div>
+    <div class="topright"><span class="chip link" id="btnHomeSettings" style="cursor:pointer">AI 设置</span><span class="chip">V1 · 源码版</span></div>
+  </div>
+  <div class="home">
+    <div class="homehead"><h2>书库</h2><button class="btn primary" id="btnImport">导入图片文件夹</button></div>
+    <div class="booklist" id="bookList"></div>
+    <div class="empty" id="emptyTip">还没有书。点右上角「导入图片文件夹」，粘贴一本扫描书的图片文件夹路径。</div>
+  </div>
+</div>
+
+<!-- ========== 校字台 ========== -->
+<div class="app" id="work" hidden>
+  <div class="topbar">
+    <div class="brand"><div class="seal">古</div><div><h1 id="workTitle">古籍整理工作台</h1><p id="workSub">校字台</p></div></div>
+    <div class="topright">
+      <span class="chip mode on" id="modeJiao">校字</span>
+      <span class="chip mode" id="modePunct" style="display:none">旧标点</span>
+      <span class="chip mode" id="btnPunctNew">句读</span>
+      <span class="chip link" id="btnPunctSettings" style="cursor:pointer">设置</span>
+      <span class="chip link" id="btnPunctExport" style="cursor:pointer">导出</span>
+      <span class="chip link" id="btnBack">← 返回书库</span>
+      <span class="chip" id="saveState">已保存</span>
+    </div>
+  </div>
+  <div class="toolbar jiao-toolbar">
+    <div class="tb" id="mCol">调整栏框</div>
+    <div class="tb" id="mChar">调整字框</div>
+    <div class="tb" id="mReset">恢复自动框</div>
+    <div class="vsep"></div>
+    <div class="tb" id="tCharBox">字符框</div>
+    <div class="tb" id="tClean">干净模式</div>
+    <div class="tb" id="tExpand">展开</div>
+    <div class="tb" id="tFontMinus">A−</div>
+    <div class="tb" id="tFontPlus">A＋</div>
+    <div class="vsep"></div>
+    <div class="tb disabled" id="tUndo" title="Ctrl+Z">↶ 撤销</div>
+    <div class="tb disabled" id="tRedo" title="Ctrl+Y">↷ 重做</div>
+    <div class="vsep"></div>
+    <div class="tb" id="tReco">重新识别本页</div>
+    <div class="tb" id="tBatch">整本 OCR 识别</div>
+    <div class="grow"></div>
+    <div class="tb" id="tPrev">上一叶</div>
+    <div class="tb" id="tNext">下一叶</div>
+    <div class="right"><span>第 <b id="pageNo">1</b> / <b id="pageTotal">-</b> 叶</span><span>Ctrl+S 保存</span></div>
+  </div>
+  <div class="toolbar punct-toolbar" id="punctToolbar" hidden>
+    <div class="tb" id="ptPrev">‹ 上一叶</div>
+    <div class="tb" id="ptNext">下一叶 ›</div>
+    <div class="vsep"></div>
+    <span class="pcaption">句读</span>
+    <div class="palette" id="punctPalette"></div>
+    <div class="vsep"></div>
+    <div class="tb" id="ptBreak">句读 空格</div>
+    <span class="pcaption">当前句读 <b id="ptCurPunct">。</b></span>
+    <div class="tb" id="ptPara">分段 ⏎</div>
+    <div class="vsep"></div>
+    <div class="tb" id="ptUndo">↶ 撤销</div>
+    <div class="tb" id="ptRedo">↷ 重做</div>
+    <div class="tb" id="ptPending">下一处待定标点</div>
+    <div class="vsep"></div>
+    <div class="tb" id="ptFontMinus">A−</div>
+    <div class="tb" id="ptFontPlus">A＋</div>
+    <div class="tb" id="ptExpand">展开</div>
+    <div class="tb" id="ptExport">导出 DOCX</div>
+    <div class="grow"></div>
+    <div class="right"><span>第 <b id="ptPageNo">1</b> / <b id="ptPageTotal">-</b> 叶</span><span id="ptStats">…</span></div>
+  </div>
+  <div class="batchbar" id="batchBar" hidden>
+    <span class="bb-ico">◉</span>
+    <span id="batchText">整本识别中…</span>
+    <div class="bar"><i id="batchFill"></i></div>
+    <span id="batchCount">0 / 0</span>
+    <span class="bbtn" id="batchCancelBtn">停止</span>
+  </div>
+  <div class="main" id="main">
+    <div class="rail">
+      <div class="head"><div class="k" id="railMeta">书</div><div class="t" id="railTitle">-</div></div>
+      <div class="thumbs" id="thumbs"></div>
+      <div class="railfoot"><div style="flex:1"><div id="railProg">进度</div><div class="bar"><i id="railBar"></i></div></div></div>
+    </div>
+    <div class="canvaswrap">
+      <div class="stage" id="stage">
+        <div id="canvas">
+          <div class="pagewrap" id="pagewrap">
+            <img id="pageimg" alt="" draggable="false">
+            <div class="boxlayer" id="boxLayer"></div>
+            <div class="pt-hl" id="ptHL" hidden></div>
+          </div>
+        </div>
+      </div>
+      <div class="busy" id="busy"><div class="in"><div class="spin"></div><span id="busyText">识别中…</span></div></div>
+      <div class="editbar" id="editBar">
+        <span class="hint" id="editHint"></span>
+        <div class="tb" id="ebReco">重识选中栏</div>
+        <div class="tb" id="ebManual">按框重识全页</div>
+        <div class="tb" id="ebDel">删除框</div>
+        <div class="tb" id="ebDone">完成</div>
+      </div>
+      <div class="zoombar">
+        <span class="zb" id="zoomOut">−</span><b id="zoomPct">100%</b><span class="zb" id="zoomIn">＋</span>
+        <span class="sep2"></span><span class="zb" id="zoomFit">适合宽度</span>
+        <span class="sep2"></span><span class="zb" id="zoomReset">100%</span>
+      </div>
+    </div>
+    <div class="work" id="workpanel">
+      <div class="divider" id="divider" title="拖动调整右栏宽度"></div>
+      <div class="workbar">
+        <span class="hint" id="workHint">点字选候选 · 直接打字替换 · 空格确认 · Tab 下一个待核 · F2 查字</span>
+        <div class="grow">
+          <span class="pill hot" id="pillRed">待核 0</span>
+          <span class="pill" id="pillSimp">简 提示：开</span>
+        </div>
+      </div>
+      <div class="rows" id="rows"></div>
+      <div class="rowsfoot"><span id="footChars">本叶 0 字</span><div class="bar"><i id="footBar"></i></div><span id="footRed">0 待核</span></div>
+      <div class="punct" id="punctPanel" hidden>
+        <div class="puncthead">
+          <div><b id="ptLeafTag">第 1 叶</b><span class="pt-hint">全文连续 · 空格=句读（插入当前标点）· ⏎=分段（另起一段）· 只加标点</span></div>
+          <div class="pt-stat" id="ptStatText"></div>
+        </div>
+        <div class="puncttext" id="punctText"></div>
+        <div class="punctfoot"><span id="ptFoot">…</span><span class="grow"></span><span class="pt-note">句读稿保存在本地 app/data</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span id="footTitle">-</span><span>·</span>
+    <span id="footCursor">当前：-</span>
+    <div class="right"><span id="footSrc"></span></div>
+  </div>
+</div>
+
+<!-- 候选字浮层 -->
+<div class="cand" id="cand">
+  <div class="top"><b>候选字</b><span id="candChar" class="big"></span><span class="sp" id="candClose">×</span></div>
+  <div class="lst" id="candList"></div>
+  <div class="ops">
+    <span class="ob" id="candDict">查字</span>
+    <span class="ob" id="candDoubt">设疑</span>
+    <span class="ob" id="candPrev">前面补字</span>
+    <span class="ob" id="candNext">后面补字</span>
+    <span class="ob" id="candDel">删去此字</span>
+  </div>
+</div>
+
+<!-- 查字弹层 -->
+<div class="modal" id="modalLookup"><div class="card lookup">
+  <h3>查字</h3>
+  <div class="lookupbar">
+    <select id="lkMode">
+      <option value="pinyin">拼音</option>
+      <option value="radical">部首</option>
+      <option value="strokes">笔画</option>
+      <option value="text">文本</option>
+    </select>
+    <input id="lkQ" placeholder="拼音 li / lǐ / li3">
+    <input id="lkStrokes" placeholder="部首外笔画" style="display:none">
+    <button class="btn primary" id="lkGo">查找</button>
+    <button class="btn" id="lkClose">关闭</button>
+  </div>
+  <div class="lookupinfo" id="lkInfo"></div>
+  <div class="lookupres" id="lkRes"></div>
+</div></div>
+
+<!-- 导入弹层 -->
+<div class="modal" id="modalImport"><div class="card">
+  <h3>导入图片文件夹</h3>
+  <p>粘贴一本扫描书的图片文件夹路径（PNG/JPG，按文件名自动排叶）。图片只在本地读取；句读 AI 会把正文发送到你配置的 OpenAI 兼容接口。</p>
+  <input class="path" id="importPath" spellcheck="false" placeholder="例如 F:\BaiduNetdiskDownload\春灯谜344">
+  <div class="pathrow"><button class="btn" id="browseImport">浏览文件夹…</button></div>
+  <div class="act"><button class="btn" id="cancelImport">取消</button><button class="btn primary" id="okImport">导入</button></div>
+</div></div>
+
+<!-- 单字重识结果卡 -->
+<div class="reco" id="reco">
+  <div class="top"><b>单字重新识别</b><span id="recoPos"></span><span class="sp" id="recoClose">×</span></div>
+  <div class="res"><b class="big old" id="recoOld"></b><span class="arr">→</span><b class="big new" id="recoNew"></b><span class="score" id="recoScore"></span></div>
+  <div class="ops"><span class="ob" id="recoCancel">取消</span><span class="ob primary" id="recoApply" style="margin-left:auto">采用这个字</span></div>
+</div>
+
+<!-- 导出选项 -->
+<div class="modal" id="modalExport"><div class="card">
+  <h3>导出 DOCX</h3>
+  <div class="opt">
+    <label class="ck"><input type="checkbox" id="exSimp" checked> 简体输出</label>
+    <label class="ck"><input type="checkbox" id="exHeading" checked> 包含书名标题</label>
+  </div>
+  <div class="opt">
+    <label class="sel">字体
+      <select id="exFont"><option>宋体</option><option>楷体</option><option>黑体</option><option>仿宋</option></select>
+    </label>
+    <label class="sel">字号
+      <select id="exSize">
+        <option value="10.5">五号 10.5pt</option>
+        <option value="12" selected>小四 12pt</option>
+        <option value="14">四号 14pt</option>
+        <option value="15">小三 15pt</option>
+      </select>
+    </label>
+  </div>
+  <p class="note">导出标点稿（不含叶码）：空行=分段，单换行=断句；未识别的叶不导出。</p>
+  <div class="act"><button class="btn" id="exCancel">取消</button><button class="btn primary" id="exGo">导出</button></div>
+</div></div>
+
+<div class="punct-mode" id="punctMode"></div>
+
+<div class="toast" id="toast"></div>
+<script src="/static/settings_ui.js?v=1"></script>
+<script src="/static/app.js?v=26"></script>
+<script src="/static/punct.js?v=10"></script>
+</body></html>
